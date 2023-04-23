@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 import { handleMongooseError } from "../helpers/handleMongooseError.js";
 import Joi from "joi";
 
-const regExp = /^(d{3}) d{3}-d{4}$/;
+const regExp = /^\(\d{3}\) \d{3}-\d{4}$/;
 
 const contactScheme = new Schema(
   {
@@ -21,6 +21,10 @@ const contactScheme = new Schema(
       type: Boolean,
       default: false,
     },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+    },
   },
   { versionKey: false, timestamps: true }
 );
@@ -28,7 +32,7 @@ const contactScheme = new Schema(
 export const addScheme = Joi.object({
   name: Joi.string().required(),
   email: Joi.string().required(),
-  phone: Joi.string().required(),
+  phone: Joi.string().pattern(regExp).required(),
   favorite: Joi.boolean(),
 });
 
