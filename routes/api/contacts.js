@@ -5,35 +5,48 @@ import {
   getByIdCtrl,
   patchFavoriteContactCtrl,
   postContactCtrl,
-  putContactCtrl,
+  putContactCtrl
 } from "../../controllers/contacts.js";
 
-import contactValidates from "../../middlewares/contactValidate.js";
-import { addScheme, updateScheme } from "../../models/contacts.js";
+import { authenticate } from "../../middlewares/authenticate.js";
 import { isValidId } from "../../middlewares/isValid.js";
+import validateBody from "../../middlewares/validateBody.js";
+import { addScheme, updateScheme } from "../../models/contacts.js";
 
 const contactsRouter = express.Router();
 
-contactsRouter.get("/", getAllCtrl);
+contactsRouter.get("/", authenticate, getAllCtrl);
 
-contactsRouter.get("/:contactId", isValidId, getByIdCtrl);
+contactsRouter.get("/:contactId", authenticate, isValidId, getByIdCtrl);
 
-contactsRouter.post("/", contactValidates(addScheme), postContactCtrl);
+contactsRouter.post(
+  "/",
+  authenticate,
+  validateBody(addScheme),
+  postContactCtrl
+);
 
 contactsRouter.put(
   "/:contactId",
+  authenticate,
   isValidId,
-  contactValidates(addScheme),
+  validateBody(addScheme),
   putContactCtrl
 );
 
 contactsRouter.patch(
   "/:contactId/favorite",
+  authenticate,
   isValidId,
-  contactValidates(updateScheme),
+  validateBody(updateScheme),
   patchFavoriteContactCtrl
 );
 
-contactsRouter.delete("/:contactId", isValidId, deleteContactCtrl);
+contactsRouter.delete(
+  "/:contactId",
+  authenticate,
+  isValidId,
+  deleteContactCtrl
+);
 
 export default contactsRouter;

@@ -3,7 +3,17 @@ import HttpError from "../helpers/httpError.js";
 import { Contacts } from "../models/contacts.js";
 
 const getAll = async (req, res, next) => {
-  const contactList = await Contacts.find();
+  const { _id: owner } = req.user;
+  const { page = 1, limit = 5, favorite } = req.query;
+  const skip = (page - 1) * limit;
+  const filter = {
+    owner,
+    ...(favorite ? { favorite } : {}),
+  };
+  const contactList = await Contacts.find(filter, "-createdAt -updatedAt", {
+    skip,
+    limit,
+  }).populate("owner", "subscription");
   res.json(contactList);
 };
 
@@ -15,7 +25,8 @@ const getById = async (req, res, next) => {
 };
 
 const postContact = async (req, res, next) => {
-  const result = await Contacts.create(req.body);
+  const { _id: owner } = req.user;
+  const result = await Contacts.create({ ...req.body, owner });
   res.status(201).json(result);
 };
 
@@ -44,9 +55,12 @@ const patchFavoriteContact = async (req, res, next) => {
   res.json(updatedContact);
 };
 
+
+
 export const getAllCtrl = ctrlWrapper(getAll);
 export const getByIdCtrl = ctrlWrapper(getById);
 export const postContactCtrl = ctrlWrapper(postContact);
 export const deleteContactCtrl = ctrlWrapper(deleteContact);
 export const putContactCtrl = ctrlWrapper(putContact);
 export const patchFavoriteContactCtrl = ctrlWrapper(patchFavoriteContact);
+
