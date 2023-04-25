@@ -55,12 +55,9 @@ const patchFavoriteContact = async (req, res, next) => {
   res.json(updatedContact);
 };
 
-
-
 export const getAllCtrl = ctrlWrapper(getAll);
 export const getByIdCtrl = ctrlWrapper(getById);
 export const postContactCtrl = ctrlWrapper(postContact);
 export const deleteContactCtrl = ctrlWrapper(deleteContact);
 export const putContactCtrl = ctrlWrapper(putContact);
 export const patchFavoriteContactCtrl = ctrlWrapper(patchFavoriteContact);
-

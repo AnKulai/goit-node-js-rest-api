@@ -25,6 +25,10 @@ const userSchema = new Schema({
     type: String,
     default: "",
   },
+  avatarURL: {
+    type: String,
+    required: true,
+  },
 });
 
 export const registerScheme = Joi.object({
