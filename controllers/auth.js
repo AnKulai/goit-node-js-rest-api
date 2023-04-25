@@ -1,8 +1,9 @@
+import bcrypt from "bcrypt";
+import gravatar from "gravatar";
+import jwt from "jsonwebtoken";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import HttpError from "../helpers/httpError.js";
-import bcrypt from "bcrypt";
 import { User } from "../models/user.js";
-import jwt from "jsonwebtoken";
 
 export const register = async (req, res) => {
   const { email, password } = req.body;
@@ -11,7 +12,12 @@ export const register = async (req, res) => {
     throw HttpError(409, "Email is already registered");
   }
   const hashPassword = await bcrypt.hash(password, 10);
-  const newUser = await User.create({ ...req.body, password: hashPassword });
+  const avatarURL = gravatar.url(email);
+  const newUser = await User.create({
+    ...req.body,
+    password: hashPassword,
+    avatarURL,
+  });
   res.status(201).json({
     email: newUser.email,
     subscription: newUser.subscription,
@@ -50,10 +56,7 @@ export const getCurrent = async (req, res) => {
   });
 };
 
-
-
 export const registerCtrl = ctrlWrapper(register);
 export const loginCtrl = ctrlWrapper(login);
 export const getCurrentCtrl = ctrlWrapper(getCurrent);
 export const logoutCtrl = ctrlWrapper(logout);
-
