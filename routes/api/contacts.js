@@ -5,7 +5,7 @@ import {
   getByIdCtrl,
   patchFavoriteContactCtrl,
   postContactCtrl,
-  putContactCtrl
+  putContactCtrl,
 } from "../../controllers/contacts.js";
 
 import { authenticate } from "../../middlewares/authenticate.js";
