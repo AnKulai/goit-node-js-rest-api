@@ -45,7 +45,8 @@ const removeTestUserByEmail = async (req, res, next) => {
   const user = await User.findOne({ email });
   if (!user) throw HttpError(404);
   await User.deleteOne({ email });
-  res.json({ message: "test user removed successfully" });
+  res.set("X-Status-Message", "test user removed successfully"); 
+  res.status(204).send();
 };
 
 export const patchSubscriptionUserCtrl = ctrlWrapper(patchSubscriptionUser);
